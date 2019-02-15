@@ -1,13 +1,13 @@
 import React from 'react';
-import { View } from 'react-native';
 import { createStackNavigator } from 'react-navigation';
+import MapsScreen from './MapsScreen';
 
 
 const MainScreen = createStackNavigator(
     {
         Page1: { 
             screen: () => (
-                <View style={{ padding: 50, flex: 1, backgroundColor: 'red' }} />),
+                <MapsScreen style={{ padding: 50, flex: 1, backgroundColor: 'red' }} />),
             navigationOptions: () => ({
                 title: 'Ana Sayfa'
             })
