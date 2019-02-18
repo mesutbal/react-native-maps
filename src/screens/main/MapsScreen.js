@@ -2,44 +2,103 @@ import React from 'react';
 import {
   StyleSheet,
   View,
-  Dimensions
+  Dimensions,
+  Alert
 } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
+import axios from 'axios';
 
 const { width, height } = Dimensions.get('window');
 
 const ASPECT_RATIO = width / height;
 
-const LATITUDE_DELTA = 0.0922;
-const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 class MapsScreen extends React.Component {
     state = {
         region: {
             latitude: 40.192952,
             longitude: 29.077177,
-            latitudeDelta: LATITUDE_DELTA,
-            longitudeDelta: LONGITUDE_DELTA,
+            latitudeDelta: 0.01,
+            longitudeDelta: 0.05,
         },
+        yerler: []
     };
 
+  componentWillMount() {
+    axios.get('http://www.bursa.com.tr/mobil_json.php').then((response) => { console.log(response); this.setState({ yerler: response.data }); });
+  }
+
+  markerTasindi(id, coordinate) {
+    console.log(id);
+    console.log(coordinate);
+  }
+
+  markerEkle(coordinate) {
+    const yerler2 = [...this.state.yerler];
+    console.log(coordinate);
+
+    yerler2.push({
+      id: -1,
+      baslik: 'Yeni Nokta',
+      icerik: 'Yeni ekledik',
+      image: '',
+      koordinat: `${coordinate.latitude},${coordinate.longitude}`,
+      cat_name: 'Yeni'
+    });
+
+    //console.log(yerler2);
+
+    this.setState({ yerler: yerler2 });
+  }
+
+  renderMarkers() {
+    return (this.state.yerler.map((yer) => {
+      const loc = yer.koordinat.split(',');
+
+      if (loc.length === 2) {
+        return (<Marker
+              key={yer.id}
+              title={yer.baslik}
+              description={yer.icerik}
+              draggable
+              coordinate={{
+                latitude: +loc[0],
+                longitude: +loc[1],
+              }}
+              onPress={() => { Alert.alert(yer.baslik, yer.icerik); }}
+              onDragEnd={(o) => { this.markerTasindi(yer.id, o.nativeEvent.coordinate); }}
+        />);
+      }
+    }));
+  }
+
   render() {
+
     return (
       <View style={styles.container}>
           <MapView
-            provider={this.props.provider}
+            mapType={'hybrid'}
             style={styles.map}
-            scrollEnabled={false}
-            zoomEnabled
-            pitchEnabled={false}
-            rotateEnabled={false}
+
             initialRegion={this.state.region}
+
+            zoomEnabled
+            zoomControlEnabled
+            minZoomLevel={0}
+            maxZoomLevel={20}
+
+            showsCompass
+            showsTraffic
+            showsBuildings
+
+
+            showsUserLocation
+            showsMyLocationButton
+            followsUserLocation
+
+            onLongPress={(o) => this.markerEkle(o.nativeEvent.coordinate)}
           >
-            <Marker
-              title="Bursa Büyükşehir Belediyesi"
-              description="Hoş Geldiniz"
-              coordinate={this.state.region}
-            />  
+            { this.renderMarkers() }
           </MapView>
       </View>
     );
