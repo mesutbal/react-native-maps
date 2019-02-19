@@ -72,7 +72,7 @@ class MapsScreen extends React.Component {
                 onPress={() => { Alert.alert(yer.baslik, yer.icerik); }}
                 onDragEnd={(o) => { this.markerTasindi(yer.id, o.nativeEvent.coordinate); }}
           >
-          <Callout>
+          {/* <Callout>
             <View style={{ height: 300, width: 300 }}>
               <WebView 
                 style={{ flex: 1 }} 
@@ -80,7 +80,7 @@ class MapsScreen extends React.Component {
                 source={{ html: yer.icerik }} 
               />
             </View>
-          </Callout>
+          </Callout> */}
           </Marker>);
         }
       }));
