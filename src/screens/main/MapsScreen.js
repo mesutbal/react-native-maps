@@ -96,6 +96,17 @@ class MapsScreen extends React.Component {
             showsMyLocationButton
             followsUserLocation
 
+            camera={{
+              center: {
+                latitude: 40.192952,
+                longitude: 29.077177
+              },
+              altitude: 20000,
+              zoom: 12,
+              pitch: 1,
+              heading: 1
+            }}
+
             onLongPress={(o) => this.markerEkle(o.nativeEvent.coordinate)}
           >
             { this.renderMarkers() }
