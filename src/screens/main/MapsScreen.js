@@ -3,9 +3,11 @@ import {
   StyleSheet,
   View,
   Dimensions,
-  Alert
+  Alert,
+  Text,
+  WebView
 } from 'react-native';
-import MapView, { Marker, Polygon } from 'react-native-maps';
+import MapView, { Marker, Polygon, Polyline, Circle, Callout } from 'react-native-maps';
 import axios from 'axios';
 
 const { width, height } = Dimensions.get('window');
@@ -21,7 +23,8 @@ class MapsScreen extends React.Component {
             latitudeDelta: 0.01,
             longitudeDelta: 0.05,
         },
-        yerler: []
+        yerler: [],
+        showMarkers: true
     };
 
   componentWillMount() {
@@ -52,24 +55,36 @@ class MapsScreen extends React.Component {
   }
 
   renderMarkers() {
-    return (this.state.yerler.map((yer) => {
-      const loc = yer.koordinat.split(',');
+    if (this.state.showMarkers) {
+      return (this.state.yerler.map((yer) => {
+        const loc = yer.koordinat.split(',');
 
-      if (loc.length === 2) {
-        return (<Marker
-              key={yer.id}
-              title={yer.baslik}
-              description={yer.icerik}
-              draggable
-              coordinate={{
-                latitude: +loc[0],
-                longitude: +loc[1],
-              }}
-              onPress={() => { Alert.alert(yer.baslik, yer.icerik); }}
-              onDragEnd={(o) => { this.markerTasindi(yer.id, o.nativeEvent.coordinate); }}
-        />);
-      }
-    }));
+        if (loc.length === 2) {
+          return (<Marker
+                key={yer.id}
+                title={yer.baslik}
+                description={yer.icerik}
+                draggable
+                coordinate={{
+                  latitude: +loc[0],
+                  longitude: +loc[1],
+                }}
+                onPress={() => { Alert.alert(yer.baslik, yer.icerik); }}
+                onDragEnd={(o) => { this.markerTasindi(yer.id, o.nativeEvent.coordinate); }}
+          >
+          <Callout>
+            <View style={{ height: 300, width: 300 }}>
+              <WebView 
+                style={{ flex: 1 }} 
+                originWhitelist={['*']}
+                source={{ html: yer.icerik }} 
+              />
+            </View>
+          </Callout>
+          </Marker>);
+        }
+      }));
+    }
   }
 
   render() {
@@ -110,7 +125,7 @@ class MapsScreen extends React.Component {
             onLongPress={(o) => this.markerEkle(o.nativeEvent.coordinate)}
           >
             { this.renderMarkers() }
-            <Polygon 
+            {/* <Polygon 
               coordinates={[
                 {
                   latitude: 40.240030,
@@ -136,7 +151,50 @@ class MapsScreen extends React.Component {
               fillColor="rgba(0,200,0,0.5)"
               strokeColor="rgba(0,0,0,0.5)"
               strokeWidth={2}
-            />
+              tappable
+              onPress={() => { Alert.alert('React Native', 'Polygon Clicked !'); }}
+            /> */}
+            {/* <Polyline 
+              coordinates={[
+                {
+                  latitude: 40.240030,
+                  longitude: 29.013669
+                },
+                {
+                  latitude: 40.181300,
+                  longitude: 29.016414
+                },
+                {
+                  latitude: 40.154015,
+                  longitude: 29.167410
+                },
+                {
+                  latitude: 40.223255,
+                  longitude: 29.156429
+                },
+                {
+                  latitude: 40.353151,
+                  longitude: 29.181137
+                }
+              ]}
+              strokeColor="red"
+              strokeWidth={12}
+              lineJoin="miter"
+              lineCap="square"
+              geodesic
+              tappable
+              onPress={() => { Alert.alert('React Native', 'Polygon Clicked !'); }}
+            /> */}
+          {/* <Circle
+            center={{
+              latitude: 40.353151,
+              longitude: 29.181137
+            }}
+            radius={500.123}
+            fillColor="rgba(0,200,0,0.5)"
+            strokeColor="rgba(0,0,0,0.5)"
+            strokeWidth={2}
+          /> */}
           </MapView>
       </View>
     );
