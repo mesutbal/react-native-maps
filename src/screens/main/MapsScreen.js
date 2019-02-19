@@ -7,8 +7,9 @@ import {
   Text,
   WebView
 } from 'react-native';
-import MapView, { Marker, Polygon, Polyline, Circle, Callout } from 'react-native-maps';
+import MapView, { Marker, Polygon, Polyline, Circle, Callout, Overlay } from 'react-native-maps';
 import axios from 'axios';
+import MapViewDirections from 'react-native-maps-directions';
 
 const { width, height } = Dimensions.get('window');
 
@@ -24,8 +25,17 @@ class MapsScreen extends React.Component {
             longitudeDelta: 0.05,
         },
         yerler: [],
-        showMarkers: true
+        showMarkers: false
     };
+
+  bursa = {
+    longitude: 29.060965,
+    latitude: 40.188526
+  }
+  ankara = {
+    longitude: 32.859741,
+    latitude: 39.933365
+  }
 
   componentWillMount() {
     axios.get('http://www.bursa.com.tr/mobil_json.php').then((response) => { console.log(response); this.setState({ yerler: response.data }); });
@@ -195,6 +205,27 @@ class MapsScreen extends React.Component {
             strokeColor="rgba(0,0,0,0.5)"
             strokeWidth={2}
           /> */}
+          {/* <Overlay 
+            image={'https://www.bursa.bel.tr/dosyalar/image/1A.jpg'}
+            bounds={
+              [
+                [40.240030, 29.013669],
+                [40.181300, 30.016414]
+              ]
+            }
+          /> */}
+
+          <Marker coordinate={this.bursa} />
+          <Marker coordinate={this.ankara} />
+
+          <MapViewDirections 
+            origin={this.bursa}
+            destination={this.ankara}
+            apikey="AIzaSyBisMLEHeioOQwng25NIpH3wxg-Sw1Hgo0"
+            strokeWidth={5}
+            strokeColor="red"
+          />
+
           </MapView>
       </View>
     );
