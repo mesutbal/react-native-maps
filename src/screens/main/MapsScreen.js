@@ -5,7 +5,7 @@ import {
   Dimensions,
   Alert
 } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Marker, Polygon } from 'react-native-maps';
 import axios from 'axios';
 
 const { width, height } = Dimensions.get('window');
@@ -110,6 +110,33 @@ class MapsScreen extends React.Component {
             onLongPress={(o) => this.markerEkle(o.nativeEvent.coordinate)}
           >
             { this.renderMarkers() }
+            <Polygon 
+              coordinates={[
+                {
+                  latitude: 40.240030,
+                  longitude: 29.013669
+                },
+                {
+                  latitude: 40.181300,
+                  longitude: 29.016414
+                },
+                {
+                  latitude: 40.154015,
+                  longitude: 29.167410
+                },
+                {
+                  latitude: 40.223255,
+                  longitude: 29.156429
+                },
+                {
+                  latitude: 40.353151,
+                  longitude: 29.181137
+                }
+              ]}
+              fillColor="rgba(0,200,0,0.5)"
+              strokeColor="rgba(0,0,0,0.5)"
+              strokeWidth={2}
+            />
           </MapView>
       </View>
     );
